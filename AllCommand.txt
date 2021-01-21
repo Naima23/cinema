@@ -1,0 +1,137 @@
+db.createCollection('movies')
+-------------------------------------------------------------------------
+
+mongoimport --type json -d films -c movies --jsonArray --drop movies.json
+
+--------------------------------------------------------------------------
+db.movies.find().pretty
+
+------------------------------------------------------------------
+db.movies.find({ year :2010}).pretty()
+
+-------------------------------------------------------------------
+
+ db.movies.find({title: /^A.*/}).pretty()
+
+-------------------------------------------------------------------
+
+db.movies.find({ year: 2011}, {cast:"Timothy Gibbs"}).pretty()
+
+---------------------------------------------------------------------------
+
+db.movies.find({ year: 2011}, {title:1, year:1, genres:"Thriller"}).pretty()
+
+-----------------------------------------------------------------------------
+db.movies.find({ year: 2016}, {title:1, year:1, genres:"Thriller"}).sort({title: -1})
+
+------------------------------------------------------------------
+  db.movies.bulkWrite(
+      [
+         { insertOne :
+            {
+               "document" :
+               {
+                  "title" : "MovieOne", "year" : 2020, "genres" : "test1"
+               }
+            }
+         },
+         { insertOne :
+            {
+               "document" :
+               {
+                  "title" : "MovieTwo", "year" : 2020, "genres" : "test2"
+               }
+            }
+         }
+      ]
+   );
+
+-----------------------------------------------------
+
+
+db.movies.deleteMany( { year: { $lt: 2000 } } )
+
+
+
+------------------------------------------------
+db.movies.update({},{$set: {"rating":[]}},false,true)
+
+In the above example last 2 fields false, true specifies the upsert and multi flags.
+
+Upsert: If set to true, creates a new document when no document matches the query criteria.
+
+Multi: If set to true, updates multiple documents that meet the query criteria. If set to false, updates one document.
+
+---------------------------------------------------------------
+db.movies.update({ "title": "MovieOne" },{$push: {"rating": {$each: [ "ByMeRating4","ByMycollegueRating5"]}}});
+db.movies.update({ "title": "MovieTwo" },{$push: {"rating": {$each: [ "ByMeRating3","ByMycollegueRating1"]}}});
+
+db.movies.update({ "title": "MovieTwo" },{$push: {"rating": {$each: [ rating: 4/5 , rating: 5]}}});
+
+db.movies.update({ "title": "MovieOne" },{$push: {"rating": {$each: [ 4/5, 5/5]}}});
+
+db.movies.update({ title: "102 dalmatians" },{$push: {rating:{ $each: [ { by: "achraf", rating: 4 }, { by: "meriem", rating: 5 }]}}})
+
+---------------------------------------------------------------------
+
+db.movies.update({},{$set: {"ar":""}},false,true)
+
+db.movies.aggregate([{$group:{ _id: "$title",ar: { $avg: "$rating" }}}])
+
+------------------------------------------------------------------------------
+
+db.movies.update({}, {$rename:{"av":"averageRating"}}, false, true);
+db.movies.updateMany( {}, { $rename: { "av": "averageRating" } } )
+
+--------------------------------------------------------------------------------
+db.movies.update({},{$set: {"views":[]}},false,true)
+
+
+-------------------------------------------------------------------------------------
+db.movies.update({ "title": "MovieTwo" },{$push: {"views": {$each: [ 123444, 66855, 78966]}}});
+db.movies.update({ "title": "MovieOne" },{$push: {"views": {$each: [ 120000, 60000, 78000]}}});
+
+-----------------------------------------------------------------------------------------------
+
+db.movies.update({}, {$set: {totalViews:""}}, false, true);
+db.movies.aggregate([{$group:{ _id: "$title",ar: { $avg: "$rating" }}}])
+
+
+db.movies.aggregate( [{
+             $group : {
+                 _id : '$title',
+                 totalViews : {$sum : '$views'}    //sums the amount
+             }
+         }
+     ] 
+ )
+
+
+------------------------------------------------------------
+
+
+db.movies.aggregate([{$group:{_id: "6008bc2418d61cb23b4b3c40",ar: { $avg: "$rating" }}}])
+
+-----------------------------------------------------------------------
+db.movies.aggregate([{ "$match": { "title": "MovieOne" } },{ "$group": { "_id": null, "$avg": "$rating" } }]);
+
+------------------------------------------------------------------------------------------------
+
+db.movies.update({},{$set:{"budget":-1}},false,true)
+
+----------------------------------------------------------------------------------------------------
+
+db.movies.update({title : "MovieOne"}, {$set:{ budget: 10}})
+db.movies.update({title : "MovieTwo"}, {$set:{ budget: 10}})
+
+----------------------------------------------------------------------------------------
+
+mongodump --dbpath C:\data\db --out C:\data\backup
+
+
+
+
+
+
+
+          
