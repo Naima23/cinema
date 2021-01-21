@@ -63,12 +63,6 @@ Upsert: If set to true, creates a new document when no document matches the quer
 Multi: If set to true, updates multiple documents that meet the query criteria. If set to false, updates one document.
 
 ---------------------------------------------------------------
-db.movies.update({ "title": "MovieOne" },{$push: {"rating": {$each: [ "ByMeRating4","ByMycollegueRating5"]}}});
-db.movies.update({ "title": "MovieTwo" },{$push: {"rating": {$each: [ "ByMeRating3","ByMycollegueRating1"]}}});
-
-db.movies.update({ "title": "MovieTwo" },{$push: {"rating": {$each: [ rating: 4/5 , rating: 5]}}});
-
-db.movies.update({ "title": "MovieOne" },{$push: {"rating": {$each: [ 4/5, 5/5]}}});
 
 db.movies.update({ title: "102 dalmatians" },{$push: {rating:{ $each: [ { by: "achraf", rating: 4 }, { by: "meriem", rating: 5 }]}}})
 
